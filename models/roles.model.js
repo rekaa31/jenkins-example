@@ -1,5 +1,5 @@
 module.exports = mongoose => {
-    const Permissions = mongoose.model(
+    const Roles = mongoose.model(
         "Roles",
         mongoose.Schema(
             {
@@ -10,5 +10,5 @@ module.exports = mongoose => {
         )
     );
 
-    return Permissions;
+    return Roles;
 };
