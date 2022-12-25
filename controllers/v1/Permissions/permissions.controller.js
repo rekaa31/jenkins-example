@@ -9,7 +9,7 @@ exports.fetchAll = async (req, res) => {
         const data = await Permissions.find({})
 
         res.status(200).send({
-            message: "Success Fetch Permissions",
+            message: "Fetch Permissions Success!",
             payload: data
         });
 
@@ -29,7 +29,7 @@ exports.fetchOne = async (req, res) => {
         const data = await Permissions.findById(req.params.id)
 
         res.status(200).send({
-            message: "Success Fetch Permission",
+            message: "Fetch Permission Success!",
             payload: data
         });
 
@@ -44,7 +44,7 @@ exports.fetchOne = async (req, res) => {
 exports.create = (req, res) => {
     try {
         // Validate request
-        if (!req.body.name) {
+        if (!req.body) {
             res.status(400).send({ message: "Content can not be empty!" });
             return;
         }
@@ -61,7 +61,7 @@ exports.create = (req, res) => {
             .save(permissions)
             .then(data => {
                 res.send({
-                    message: "Success"
+                    message: "Create Permission Success!"
                 })
             })
             .catch(err => {

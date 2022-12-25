@@ -1,21 +1,70 @@
 const db = require("../../../models");
 const Roles = db.roles;
+const Permissions = db.permissions;
+const mongoose = require("mongoose");
 
-exports.create = (req, res) => {
+exports.fetchAll = async (req, res) => {
+
+    try {
+
+        const data = await Roles.find({})
+
+        res.status(200).send({
+            message: "Fetch Roles Success!",
+            payload: data
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            message:
+            error.message || "Some error occurred while creating the Permissions."
+        });
+    }
+}
+
+exports.fetchOne = async (req, res) => {
+
+    try {
+
+        const data = await Roles.findById(req.params.id)
+
+        res.status(200).send({
+            message: "Fetch Role Success!",
+            payload: data
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            message:
+            error.message || "Some error occurred while creating the Permissions."
+        });
+    }
+
+
+}
+
+exports.create = async (req, res) => {
     try {
         // Validate request
-        if (!req.body.name) {
+        if (!req.body) {
             res.status(400).send({ message: "Content can not be empty!" });
             return;
         }
 
+        let permissionsList = await Permissions.find({
+            '_id' : {
+                $in: req.body.permissions.map((permission) => {
+                    return mongoose.Types.ObjectId(permission)
+                })
+            }
+        }).select("name code menu_name -_id")
+
+
+
         // Create a Permissions
         const roles = new Roles({
             name: req.body.name,
-            permissions : [{
-                name : "Permission Create",
-                code : "permission.create"
-            }]
+            permissions : permissionsList
         });
 
         // Save Permissions in the database
@@ -23,7 +72,7 @@ exports.create = (req, res) => {
             .save(roles)
             .then(data => {
                 res.send({
-                    message: "Success"
+                    message: "Create Role Success!"
                 })
             })
             .catch(err => {

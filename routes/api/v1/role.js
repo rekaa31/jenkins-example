@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var { create } = require("./../../../controllers/v1/Roles/roles.controllers")
+var { create, fetchAll, fetchOne } = require("./../../../controllers/v1/Roles/roles.controllers")
 
 
-// /* FETCH ALL PERMISSION */
-// router.get('/permissions', fetchAll);
+/* FETCH ALL PERMISSION */
+router.get('/roles', fetchAll);
 
 // /* FETCH ONE PERMISSION */
-// router.get('/permission/:id', fetchOne);
+router.get('/role/:id', fetchOne);
 
 /* CREATE PERMISSION. */
 router.post('/role/create', create);

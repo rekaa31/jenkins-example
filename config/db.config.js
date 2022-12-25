@@ -1,9 +1,9 @@
 const config = {
-    url: `mongodb://127.0.0.1:27017/${process.env.DB_NAME_DEV}`,
+    url: `mongodb://${process.env.DB_HOST_DEV}:${process.env.DB_PORT_DEV}/${process.env.DB_NAME_DEV}`,
     options: {
-        authSource: "admin",
-        user: "root",
-        pass: "123!@#apotekasli!@#123",
+        authSource: process.env.DB_SOURCE_DEV,
+        user: process.env.DB_USER_DEV,
+        pass: process.env.DB_PASSWORD_DEV,
     }
 }
 
