@@ -1,13 +1,21 @@
-const db = require("./../models");
+const mongoose = require('mongoose');
+const dbConfig = require('./../config/db.config')
 
-async function checkDbConnection() {
-    db.sequelize.authenticate().then(() => {
-        console.log('Connection has been established successfully.');
-    }).catch(err => {
-        console.error('Unable to connect to the database:', err);
-    });
+function checkConnectionDb(){
+    try {
+        mongoose.connect(`${dbConfig.config.url}`, dbConfig.config.options).then((response) => {
+            console.log("Connected to MongoDB")
+            return true
+        }).catch((error) => {
+            console.error(error)
+            return false
+        })
+    } catch (error) {
+        console.error(error)
+        return false
+    }
 }
 
 module.exports = {
-    checkDbConnection
+    checkConnectionDb
 }

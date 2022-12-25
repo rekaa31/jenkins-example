@@ -4,10 +4,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const { checkDbConnection } = require('./utils/checkDbConnection');
+const { checkConnectionDb } = require('./utils/checkDbConnection');
 
 var app = express();
+
+const cors = require("cors");
+
+var corsOptions = {
+    origin: "*"
+};
+
+app.use(cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -15,10 +22,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// CHECK CONNECTION
-checkDbConnection()
+// CHECK DB CONNECTION
+checkConnectionDb()
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+
 
 module.exports = app;

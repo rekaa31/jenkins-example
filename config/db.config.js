@@ -1,20 +1,12 @@
-require('dotenv').config()
+const config = {
+    url: `mongodb://127.0.0.1:27017/${process.env.DB_NAME_DEV}`,
+    options: {
+        authSource: "admin",
+        user: "root",
+        pass: "123!@#apotekasli!@#123",
+    }
+}
 
 module.exports = {
-  development: {
-    username: process.env.DB_USER_DEV,
-    password : process.env.DB_PASSWORD_DEV,
-    database : process.env.DB_NAME_DEV,
-    host : process.env.DB_HOST_DEV,
-    port : process.env.DB_PORT_DEV,
-    dialect : "mysql"
-  },
-  production: {
-    username: process.env.DB_USER_PROD,
-    password : process.env.DB_PASSWORD_PROD,
-    database : process.env.DB_NAME_PROD,
-    host : process.env.DB_HOST_PROD,
-    port : process.env.DB_PORT_PROD,
-    dialect: "mysql"
-  }
-}  
+    config
+};
