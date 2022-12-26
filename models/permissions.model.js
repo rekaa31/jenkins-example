@@ -1,3 +1,5 @@
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 module.exports = mongoose => {
     const Permissions = mongoose.model(
         "Permissions",
@@ -13,7 +15,7 @@ module.exports = mongoose => {
             { 
                 timestamps: true
             }
-        )
+        ).plugin(mongoosePaginate)
     );
 
     return Permissions;

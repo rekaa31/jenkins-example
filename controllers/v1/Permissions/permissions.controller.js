@@ -6,7 +6,12 @@ exports.fetchAll = async (req, res) => {
 
     try {
 
-        const data = await Permissions.find({})
+        const options = {
+            page: req.query.page,
+            limit: req.query.limit
+        };
+
+        const data = await Permissions.paginate({}, options)
 
         res.status(200).send({
             message: "Fetch Permissions Success!",
@@ -16,7 +21,7 @@ exports.fetchAll = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             message:
-            error.message || "Some error occurred while creating the Permissions."
+                error.message || "Some error occurred while creating the Permissions."
         });
     }
 
@@ -36,7 +41,7 @@ exports.fetchOne = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             message:
-            error.message || "Some error occurred while creating the Permissions."
+                error.message || "Some error occurred while creating the Permissions."
         });
     }
 }
@@ -74,7 +79,7 @@ exports.create = (req, res) => {
     } catch (error) {
         res.status(500).send({
             message:
-            error.message || "Some error occurred while creating the Permissions."
+                error.message || "Some error occurred while creating the Permissions."
         });
     }
 }

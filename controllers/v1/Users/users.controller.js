@@ -78,7 +78,7 @@ exports.create = async (req, res) => {
 
 		// Create a Permissions
 		const users = new Users({
-			name: req.body.name,
+			name: req.body.name.toUpperCase(),
 			nip: req.body.nip,
 			nik: req.body.nik,
 			role: req.body.role,
@@ -113,6 +113,38 @@ exports.create = async (req, res) => {
 					message: "User sudah terdaftar!"
 				});
 			});
+	} catch (error) {
+		res.status(500).send({
+			message:
+				error.message || "Some error occurred while creating the Permissions."
+		});
+	}
+}
+
+exports.verification = async (req, res) => {
+	try {
+		const data = await Users.findById(req.params.id).select("-password -__v -token -otp")
+		const update = {
+			is_verified : !data.is_verified
+		}
+
+		data.updateOne(update).then(() => {
+			if(update.is_verified){
+				res.send({
+					message: "User has been Verified!"
+				})
+			}else{
+				res.send({
+					message: "User has been Unverified!"
+				})
+			}
+		})
+		.catch(err => {
+			console.log(err)
+			res.status(500).send({
+				message: "User sudah terdaftar!"
+			});
+		});
 	} catch (error) {
 		res.status(500).send({
 			message:
