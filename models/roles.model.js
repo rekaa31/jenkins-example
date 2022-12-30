@@ -1,3 +1,5 @@
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 module.exports = mongoose => {
     const Roles = mongoose.model(
         "Roles",
@@ -7,7 +9,7 @@ module.exports = mongoose => {
                 permissions: mongoose.Schema.Types.Mixed
             },
             { timestamps: true }
-        )
+        ).plugin(mongoosePaginate)
     );
 
     return Roles;

@@ -7,7 +7,12 @@ exports.fetchAll = async (req, res) => {
 
     try {
 
-        const data = await Roles.find({})
+        const options = {
+            page: req.query.page,
+            limit: req.query.limit
+        };
+
+        const data = await Roles.paginate({}, options)
 
         res.status(200).send({
             message: "Fetch Roles Success!",

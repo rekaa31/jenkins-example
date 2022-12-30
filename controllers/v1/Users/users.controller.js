@@ -9,13 +9,19 @@ exports.fetchAll = async (req, res) => {
 
 	try {
 
-		const data = await Users.find({}).select("-password -__v -token -otp")
+		const options = {
+            page: req.query.page,
+            limit: req.query.limit,
+			select: "-password -__v -token -otp"
+        };
+
+		const data = await Users.paginate({}, options)
 		const division = JSON.parse(JSON.stringify(await Divisions.find({})))
 		const role = JSON.parse(JSON.stringify(await Roles.find({})))
 
 		const newArray = []
 
-		data.forEach((user) => {
+		data.docs.forEach((user) => {
 			let dataUser = JSON.parse(JSON.stringify(user))
 			dataUser.lama_kerja = countRangeDuration(user.tanggal_masuk)
 			dataUser.divisi = division.find((item) => item._id === user.divisi).name.toUpperCase()
@@ -25,7 +31,10 @@ exports.fetchAll = async (req, res) => {
 
 		res.status(200).send({
 			message: "Fetch Users Success!",
-			payload: newArray
+			payload: {
+				...data,
+				docs : newArray
+			}
 		});
 
 	} catch (error) {

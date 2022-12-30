@@ -1,3 +1,5 @@
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 module.exports = mongoose => {
     const Users = mongoose.model(
         "Users",
@@ -42,7 +44,7 @@ module.exports = mongoose => {
 				last_login: Date				
             },
             { timestamps: true }
-        )
+        ).plugin(mongoosePaginate)
     );
 
     return Users;
