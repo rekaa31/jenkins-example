@@ -3,7 +3,7 @@ module.exports = mongoose => {
       "Attendances",
       mongoose.Schema(
           {
-              name: String,
+              user_id: String,
               location: [Number],
               status_presensi_awal: {
                 type: String,
