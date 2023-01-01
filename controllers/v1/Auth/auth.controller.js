@@ -28,6 +28,11 @@ exports.login = async (req, res) => {
 			return;
     }
 
+    if(!user[0].is_verified) {
+      res.status(403).send({ message: "User is not verified" });
+			return;
+    }
+
     const token = jwt.sign(
       {
         user_id: user[0]._id,
