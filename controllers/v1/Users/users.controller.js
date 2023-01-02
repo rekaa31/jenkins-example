@@ -4,6 +4,7 @@ const { countRangeDuration } = require("../../../utils/countRangeDuration");
 const Users = db.users;
 const Divisions = db.divisions;
 const Roles = db.roles;
+const moment = require('moment')
 
 exports.fetchAll = async (req, res) => {
 
@@ -15,7 +16,13 @@ exports.fetchAll = async (req, res) => {
 			select: "-password -__v -token -otp"
         };
 
-		const data = await Users.paginate({}, options)
+		let query = {
+			role : {
+				$ne : "super.admin"
+			}
+		}
+
+		const data = await Users.paginate(query, options)
 		const division = JSON.parse(JSON.stringify(await Divisions.find({})))
 		const role = JSON.parse(JSON.stringify(await Roles.find({})))
 
@@ -25,7 +32,7 @@ exports.fetchAll = async (req, res) => {
 			let dataUser = JSON.parse(JSON.stringify(user))
 			dataUser.lama_kerja = countRangeDuration(user.tanggal_masuk)
 			dataUser.divisi = division.find((item) => item._id === user.divisi).name.toUpperCase()
-			dataUser.role = role.find((item) => item._id === user.role).name.toUpperCase()
+			dataUser.role = role.find((item) => item.code === user.role).name.toUpperCase()
 			newArray.push(dataUser)
 		})
 
@@ -57,7 +64,7 @@ exports.fetchOne = async (req, res) => {
 
 		dataUser.lama_kerja = countRangeDuration(new Date(dataUser.tanggal_masuk))
 		dataUser.divisi = division.find((item) => item._id === dataUser.divisi).name.toUpperCase()
-		dataUser.role = role.find((item) => item._id === dataUser.role).name.toUpperCase()
+		dataUser.role = role.find((item) => item.code === dataUser.role).name.toUpperCase()
 
 		res.status(200).send({
 			message: "Fetch Users Success!",
@@ -92,8 +99,8 @@ exports.create = async (req, res) => {
 			nik: req.body.nik,
 			role: req.body.role,
 			tempat_lahir: req.body.tempat_lahir.toUpperCase(),
-			tanggal_lahir: req.body.tanggal_lahir,
-			tanggal_masuk: req.body.tanggal_masuk,
+			tanggal_lahir: moment(req.body.tanggal_lahir, "DD/MM/YYYY").format(),
+			tanggal_masuk: moment(req.body.tanggal_masuk, "DD/MM/YYYY").format(),
 			agama: req.body.agama,
 			status_perkawinan: req.body.status_perkawinan,
 			alamat: req.body.alamat,
@@ -117,9 +124,10 @@ exports.create = async (req, res) => {
 				})
 			})
 			.catch(err => {
-				console.log(err)
+				console.log(err.message)
 				res.status(500).send({
-					message: "User sudah terdaftar!"
+					message: "Create User Failed!",
+					error: err.message
 				});
 			});
 	} catch (error) {
@@ -153,6 +161,19 @@ exports.verification = async (req, res) => {
 			res.status(500).send({
 				message: "User sudah terdaftar!"
 			});
+		});
+	} catch (error) {
+		res.status(500).send({
+			message:
+				error.message || "Some error occurred while creating the Permissions."
+		});
+	}
+}
+
+exports.importData = async (req, res) => {
+	try {
+		res.status(200).send({
+			message: "Masuk"
 		});
 	} catch (error) {
 		res.status(500).send({

@@ -12,7 +12,13 @@ exports.fetchAll = async (req, res) => {
             limit: req.query.limit
         };
 
-        const data = await Roles.paginate({}, options)
+        let data = []
+
+		if(options.page && options.limit){
+		 	data = await Roles.paginate({}, options)
+		} else{
+			data = await Roles.find({})
+		}
 
         res.status(200).send({
             message: "Fetch Roles Success!",
@@ -69,6 +75,7 @@ exports.create = async (req, res) => {
         // Create a Permissions
         const roles = new Roles({
             name: req.body.name,
+            code: req.body.code,
             permissions : permissionsList
         });
 

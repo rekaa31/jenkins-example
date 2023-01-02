@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { create, fetchAll, fetchOne, verification } = require("./../../../controllers/v1/Users/users.controller")
+var { create, fetchAll, fetchOne, verification, importData } = require("./../../../controllers/v1/Users/users.controller")
 
 
 /* FETCH ALL PERMISSION */
@@ -14,6 +14,9 @@ router.post('/user/create', create);
 
 /* CREATE VERIFICATION. */
 router.put('/user/:id/verification', verification);
+
+/* IMPORT USERS. */
+router.post('/user/import', importData);
 
 // /* UPDATE PERMISSION */
 // router.get('/permission/:id', update);

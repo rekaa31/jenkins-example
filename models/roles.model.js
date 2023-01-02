@@ -6,6 +6,7 @@ module.exports = mongoose => {
         mongoose.Schema(
             {
                 name: String,
+                code: String,
                 permissions: mongoose.Schema.Types.Mixed
             },
             { timestamps: true }

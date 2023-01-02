@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const db = require("../../../models");
 const Users = db.users;
 const config = require("../../../config/auth.config.js");
+const Roles = db.roles;
+const Divisions = db.divisions;
 
 exports.fetchProfile = async (req, res) => {
 	try {
@@ -21,10 +23,16 @@ exports.fetchProfile = async (req, res) => {
     }
 
     const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
+		const role = JSON.parse(JSON.stringify(await Roles.find({})))
+		const divisions = JSON.parse(JSON.stringify(await Divisions.find({})))
+
+    const dataProfile = JSON.parse(JSON.stringify(profile))
+    dataProfile.role = role.find((item) => item.code === dataProfile.role).name.toUpperCase()
+    dataProfile.divisi = divisions.find((item) => item._id === dataProfile.divisi).name.toUpperCase()
 
     res.status(200).send({
       message: "Fetch Profile Success!",
-      payload: profile
+      payload: dataProfile
     });
 
 	} catch (error) {

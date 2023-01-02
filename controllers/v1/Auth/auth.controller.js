@@ -13,18 +13,18 @@ exports.login = async (req, res) => {
 		}
 
     const user = await Users.find({
-      nik: req.body.nik
+      nip: req.body.nip
     });
 
     if(user.length === 0) {
-      res.status(403).send({ message: "NIK or password is not correct" });
+      res.status(403).send({ message: "NIP or password is not correct" });
 			return;
     }
 
     const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
 
     if(!isPasswordCorrect) {
-      res.status(403).send({ message: "NIK or password is not correct" });
+      res.status(403).send({ message: "NIP or password is not correct" });
 			return;
     }
 
