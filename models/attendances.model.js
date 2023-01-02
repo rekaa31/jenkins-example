@@ -6,17 +6,9 @@ module.exports = mongoose => {
         mongoose.Schema(
             {
                 user_id: String,
-                location: [Number],
-                status_presensi_awal: {
-                    type: String,
-                    enum: ["TIDAK HADIR", "TEPAT WAKTU", "TERLAMBAT"],
-                    default: "TIDAK HADIR",
-                }, 
-                status_presensi_akhir: {
-                    type: String,
-                    enum: ["TIDAK HADIR", "TEPAT WAKTU", "TERLAMBAT"],
-                    default: "TIDAK HADIR",
-                }
+                tanggal : String,
+                type : String,
+                presensi_detail: mongoose.Schema.Types.Mixed, 
             },
             { timestamps: true }
         ).plugin(mongoosePaginate)

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { create, fetchAll, fetchOne } = require("./../../../controllers/v1/Attendances/attendances.controller");
+const { fetchAll, fetchOne, checkIn, checkOut } = require("./../../../controllers/v1/Attendances/attendances.controller");
 
 /* FETCH ALL ATTENDANCE */
 router.get('/attendances', fetchAll);
@@ -9,6 +9,9 @@ router.get('/attendances', fetchAll);
 router.get('/attendance/:id', fetchOne);
 
 /* CREATE ATTENDANCE. */
-router.post('/attendance/create', create);
+router.post('/attendance/check-in', checkIn);
+
+/* CREATE ATTENDANCE. */
+router.post('/attendance/check-out', checkOut);
 
 module.exports = router;
