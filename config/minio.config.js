@@ -1,10 +1,10 @@
 var Minio = require('minio')
 
 exports.minioClient = new Minio.Client({
-    endPoint: 'localhost',
+    endPoint: 'minio.apotekasli.net',
     port: 9000,
-    accessKey: 'pfUrVV7eQNX0wlkb',
-    secretKey: 'nuvqqmDQyvEre6pGFdzGe5NqhwbiBX33',
+    accessKey: 'Fz0RsBn7CjoxVPND',
+    secretKey: 'NItW2dIpewqxAQ82VZF1pSsL3xRe7sEj',
 	pathStyle: true,
 	useSSL: false
 });

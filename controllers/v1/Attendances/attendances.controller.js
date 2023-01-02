@@ -5,8 +5,109 @@ const moment = require('moment')
 const fs = require("fs");
 const { minioClient } = require("../../../config/minio.config");
 const { v4: uuidv4 } = require('uuid');
+const config = require("../../../config/auth.config.js");
+const jwt = require("jsonwebtoken");
 
 const bucketName = "presensi-image";
+
+exports.checkAttendence = async (req, res) => {
+
+	try {
+
+		const token = req.headers["authorization"].split(' ')[1];
+
+		if (!token) {
+			res.status(403).send({ message: "No token provided" });
+			return;
+		}
+
+		const decodedToken = jwt.verify(token, config.secret);
+
+		if (!decodedToken) {
+			res.status(401).send({ message: "Token unauthorized" });
+			return;
+		}
+
+		let AttendanceCheckIn = await Attendances.find({
+			user_id: decodedToken.user_id,
+			tanggal: moment().format("DD/MM/YYYY"),
+			type: "CHECK-IN"
+		})
+
+		let AttendanceCheckOut = await Attendances.find({
+			user_id: decodedToken.user_id,
+			tanggal: moment().format("DD/MM/YYYY"),
+			type: "CHECK-OUT"
+		})
+
+		res.status(200).send({
+			message: "Fetch Attendances Own!",
+			payload: {
+				check_in: {
+					status : AttendanceCheckIn.length !== 0,
+					time : AttendanceCheckIn.length !== 0 ? AttendanceCheckIn[0].presensi_detail.check_time : ""
+				},
+				check_out: {
+					status : AttendanceCheckOut.length !== 0,
+					time : AttendanceCheckOut.length !== 0 ? AttendanceCheckOut[0].presensi_detail.check_time : ""
+				}
+			}
+		});
+
+	} catch (error) {
+		res.status(500).send({
+			message:
+				error.message || "Some error occurred while creating the Permissions."
+		});
+	}
+}
+
+exports.fetchOwn = async (req, res) => {
+
+	try {
+
+		const token = req.headers["authorization"].split(' ')[1];
+
+		if (!token) {
+			res.status(403).send({ message: "No token provided" });
+			return;
+		}
+
+		const decodedToken = jwt.verify(token, config.secret);
+
+		if (!decodedToken) {
+			res.status(401).send({ message: "Token unauthorized" });
+			return;
+		}
+
+		let Attendance = await Attendances.aggregate([
+			{
+				$match: {
+					"user_id": decodedToken.user_id
+				}
+			},
+			{
+				$group: {
+					_id: '$tanggal',
+					presensi: {
+						$push: "$$ROOT"
+					} // this means that the count will increment by 1
+				}
+			}
+		])
+
+		res.status(200).send({
+			message: "Fetch Attendances Own!",
+			payload: Attendance
+		});
+
+	} catch (error) {
+		res.status(500).send({
+			message:
+				error.message || "Some error occurred while creating the Permissions."
+		});
+	}
+}
 
 exports.fetchAll = async (req, res) => {
 
@@ -59,14 +160,28 @@ exports.checkIn = async (req, res) => {
 			return;
 		}
 
-		const profile = await Users.findById(req.body.user_id).select("-password -__v -token -otp")
+		const token = req.headers["authorization"].split(' ')[1];
+
+		if (!token) {
+			res.status(403).send({ message: "No token provided" });
+			return;
+		}
+
+		const decodedToken = jwt.verify(token, config.secret);
+
+		if (!decodedToken) {
+			res.status(401).send({ message: "Token unauthorized" });
+			return;
+		}
+
+		const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
 		const base64Data = new Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ""), 'base64');
 
 		// Getting the file type, ie: jpeg, png or gif
 		const type = req.body.image.split(';')[0].split('/')[1];
 
 		// console.log(profile.name.toLowerCase().replace(" ","-"))
-		const objectFileName = `${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkin-${moment().format("DDMMYYYY")}.${type}`;
+		const objectFileName = `${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkin-${moment().format("DDMMYYYY")}.${type}`;
 
 		await minioClient.putObject(bucketName, objectFileName, base64Data).catch((e) => {
 			console.log("Error while creating object from file data: ", e);
@@ -74,7 +189,7 @@ exports.checkIn = async (req, res) => {
 		});
 
 		let Attendance = await Attendances.find({
-			user_id: req.body.user_id,
+			user_id: decodedToken.user_id,
 			tanggal: moment().format("DD/MM/YYYY"),
 			type: "CHECK-IN"
 		})
@@ -86,7 +201,7 @@ exports.checkIn = async (req, res) => {
 
 		// Create a Permissions
 		const attendance = new Attendances({
-			user_id: req.body.user_id,
+			user_id: decodedToken.user_id,
 			tanggal: moment().format("DD/MM/YYYY"),
 			type: "CHECK-IN",
 			presensi_detail: {
@@ -129,14 +244,28 @@ exports.checkOut = async (req, res) => {
 			return;
 		}
 
-		const profile = await Users.findById(req.body.user_id).select("-password -__v -token -otp")
+		const token = req.headers["authorization"].split(' ')[1];
+
+		if (!token) {
+			res.status(403).send({ message: "No token provided" });
+			return;
+		}
+
+		const decodedToken = jwt.verify(token, config.secret);
+
+		if (!decodedToken) {
+			res.status(401).send({ message: "Token unauthorized" });
+			return;
+		}
+
+		const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
 		const base64Data = new Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ""), 'base64');
 
 		// Getting the file type, ie: jpeg, png or gif
 		const type = req.body.image.split(';')[0].split('/')[1];
 
 		// console.log(profile.name.toLowerCase().replace(" ","-"))
-		const objectFileName = `${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkout-${moment().format("DDMMYYYY")}.${type}`;
+		const objectFileName = `${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkout-${moment().format("DDMMYYYY")}.${type}`;
 
 		await minioClient.putObject(bucketName, objectFileName, base64Data).catch((e) => {
 			console.log("Error while creating object from file data: ", e);
@@ -144,7 +273,7 @@ exports.checkOut = async (req, res) => {
 		});
 
 		let Attendance = await Attendances.find({
-			user_id: req.body.user_id,
+			user_id: decodedToken.user_id,
 			tanggal: moment().format("DD/MM/YYYY"),
 			type: "CHECK-OUT"
 		})
@@ -156,7 +285,7 @@ exports.checkOut = async (req, res) => {
 
 		// Create a Permissions
 		const attendance = new Attendances({
-			user_id: req.body.user_id,
+			user_id: decodedToken.user_id,
 			tanggal: moment().format("DD/MM/YYYY"),
 			type: "CHECK-OUT",
 			presensi_detail: {
