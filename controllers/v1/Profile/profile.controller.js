@@ -69,7 +69,7 @@ exports.updateProfile = async (req, res) => {
     const { nip, nik } = req.body;
 
     if(nip || nik) {
-      res.status(500).send({ message: "NIP or NIK can not be change" });
+      res.status(500).send({ message: "NIP, NIK, email, or contact number can not be changed" });
 			return;
     }
 
