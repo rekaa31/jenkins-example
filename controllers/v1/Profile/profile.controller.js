@@ -9,18 +9,7 @@ const Divisions = db.divisions;
 exports.fetchProfile = async (req, res) => {
 	try {
     const token = req.headers["authorization"].split(' ')[1];
-
-    if(!token) {
-      res.status(403).send({ message: "No token provided" });
-			return;
-    }
-
     const decodedToken = jwt.verify(token, config.secret);
-
-    if(!decodedToken) {
-      res.status(401).send({ message: "Token unauthorized" });
-			return;
-    }
 
     const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
 		const role = JSON.parse(JSON.stringify(await Roles.find({})))
@@ -50,25 +39,11 @@ exports.updateProfile = async (req, res) => {
 			res.status(400).send({ message: "Content can not be empty!" });
 			return;
     }
-
-    const token = req.headers["authorization"].split(' ')[1];
-
-    if(!token) {
-      res.status(403).send({ message: "No token provided" });
-			return;
-    }
-
-    const decodedToken = jwt.verify(token, config.secret);
-
-    if(!decodedToken) {
-      res.status(401).send({ message: "Token unauthorized" });
-			return;
-    }
-
+    
     const passwordBcrypt = await bcrypt.hash(req.body.password, saltRounds);
-    const { nip, nik } = req.body;
+    const { nip, nik, email, nomor_kontak } = req.body;
 
-    if(nip || nik) {
+    if(nip || nik || email || nomor_kontak) {
       res.status(500).send({ message: "NIP, NIK, email, or contact number can not be changed" });
 			return;
     }
