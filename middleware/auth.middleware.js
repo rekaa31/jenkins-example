@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
 			return;
     }
 
-    const decodedToken = jwt.verify(token, config.secret);
+    const decodedToken = jwt.verify(token, config.jwtSecret);
 
     if(!decodedToken) {
       res.status(401).send({ message: "Token unauthorized" });
