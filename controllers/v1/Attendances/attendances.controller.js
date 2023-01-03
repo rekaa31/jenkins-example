@@ -94,7 +94,9 @@ exports.fetchOwn = async (req, res) => {
 					} // this means that the count will increment by 1
 				}
 			}
-		])
+		]).sort({
+			_id:-1
+		})
 
 		res.status(200).send({
 			message: "Fetch Attendances Own!",
