@@ -66,11 +66,15 @@ exports.updateProfile = async (req, res) => {
     }
 
     const passwordBcrypt = await bcrypt.hash(req.body.password, saltRounds);
+    const { nip, nik } = req.body;
 
-    const profile = new Users({
+    if(nip || nik) {
+      res.status(500).send({ message: "NIP or NIK can not be change" });
+			return;
+    }
+
+    const profile = {
 			name: req.body.name.toUpperCase(),
-			nip: req.body.nip,
-			nik: req.body.nik,
 			role: req.body.role,
 			tempat_lahir: req.body.tempat_lahir.toUpperCase(),
 			tanggal_lahir: req.body.tanggal_lahir,
@@ -87,9 +91,9 @@ exports.updateProfile = async (req, res) => {
 			nomor_kontak: req.body.nomor_kontak,
 			password: passwordBcrypt,
 			last_login: null
-		});
+		};
 
-    const updatedProfile = await Users.findOneAndUpdate(req.params.id, profile, {
+    const updatedProfile = await Users.findByIdAndUpdate(req.params.id, profile, {
       new: true,
     });
 
