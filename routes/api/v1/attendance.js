@@ -1,24 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const { fetchAll, fetchOne, checkIn, checkOut, fetchOwn, checkAttendence } = require("./../../../controllers/v1/Attendances/attendances.controller");
+const authMiddleware = require("../../../middleware/auth.middleware");
+
 
 /* FETCH ALL ATTENDANCE */
-router.get('/attendances', fetchAll);
+router.get('/attendances', authMiddleware, fetchAll);
 
 /* FETCH ALL ATTENDANCE */
-router.get('/attendances/own', fetchOwn);
+router.get('/attendances/own', authMiddleware, fetchOwn);
 
 /* CHECK ATTENDENCE. */
-router.get('/attendance/status', checkAttendence);
+router.get('/attendance/status', authMiddleware, checkAttendence);
 
 /* FETCH ONE ATTENDACE */
-router.get('/attendance/:id', fetchOne);
+router.get('/attendance/:id', authMiddleware, fetchOne);
 
 /* CREATE ATTENDANCE. */
-router.post('/attendance/check-in', checkIn);
+router.post('/attendance/check-in', authMiddleware, checkIn);
 
 /* CREATE ATTENDANCE. */
-router.post('/attendance/check-out', checkOut);
+router.post('/attendance/check-out', authMiddleware, checkOut);
 
 
 

@@ -9,18 +9,7 @@ const Divisions = db.divisions;
 exports.fetchProfile = async (req, res) => {
 	try {
     const token = req.headers["authorization"].split(' ')[1];
-
-    if(!token) {
-      res.status(403).send({ message: "No token provided" });
-			return;
-    }
-
     const decodedToken = jwt.verify(token, config.secret);
-
-    if(!decodedToken) {
-      res.status(401).send({ message: "Token unauthorized" });
-			return;
-    }
 
     const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
 		const role = JSON.parse(JSON.stringify(await Roles.find({})))
@@ -50,24 +39,10 @@ exports.updateProfile = async (req, res) => {
 			res.status(400).send({ message: "Content can not be empty!" });
 			return;
     }
-
-    const token = req.headers["authorization"].split(' ')[1];
-
-    if(!token) {
-      res.status(403).send({ message: "No token provided" });
-			return;
-    }
-
-    const decodedToken = jwt.verify(token, config.secret);
-
-    if(!decodedToken) {
-      res.status(401).send({ message: "Token unauthorized" });
-			return;
-    }
-
+    
     const passwordBcrypt = await bcrypt.hash(req.body.password, saltRounds);
 
-    const profile = new Users({
+    const profile = {
 			name: req.body.name.toUpperCase(),
 			nip: req.body.nip,
 			nik: req.body.nik,
@@ -87,7 +62,7 @@ exports.updateProfile = async (req, res) => {
 			nomor_kontak: req.body.nomor_kontak,
 			password: passwordBcrypt,
 			last_login: null
-		});
+		};
 
     const updatedProfile = await Users.findOneAndUpdate(req.params.id, profile, {
       new: true,
