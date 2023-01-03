@@ -1,22 +1,22 @@
 var express = require('express');
 var router = express.Router();
-var { create, fetchAll, fetchOne, verification, importData } = require("./../../../controllers/v1/Users/users.controller")
-
+var { create, fetchAll, fetchOne, verification, importData } = require("./../../../controllers/v1/Users/users.controller");
+const authMiddleware = require('../../../middleware/auth.middleware');
 
 /* FETCH ALL PERMISSION */
-router.get('/users', fetchAll);
+router.get('/users', authMiddleware, fetchAll);
 
 /* FETCH ONE PERMISSION */
-router.get('/user/:id', fetchOne);
+router.get('/user/:id', authMiddleware, fetchOne);
 
 /* CREATE PERMISSION. */
-router.post('/user/create', create);
+router.post('/user/create', authMiddleware, create);
 
 /* CREATE VERIFICATION. */
-router.put('/user/:id/verification', verification);
+router.put('/user/:id/verification', authMiddleware, verification);
 
 /* IMPORT USERS. */
-router.post('/user/import', importData);
+router.post('/user/import', authMiddleware, importData);
 
 // /* UPDATE PERMISSION */
 // router.get('/permission/:id', update);
