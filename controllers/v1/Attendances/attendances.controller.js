@@ -21,7 +21,7 @@ exports.checkAttendence = async (req, res) => {
 			return;
 		}
 
-		const decodedToken = jwt.verify(token, config.secret);
+		const decodedToken = jwt.verify(token, config.jwtSecret);
 
 		if (!decodedToken) {
 			res.status(401).send({ message: "Token unauthorized" });
@@ -73,7 +73,7 @@ exports.fetchOwn = async (req, res) => {
 			return;
 		}
 
-		const decodedToken = jwt.verify(token, config.secret);
+		const decodedToken = jwt.verify(token, config.jwtSecret);
 
 		if (!decodedToken) {
 			res.status(401).send({ message: "Token unauthorized" });
@@ -169,7 +169,7 @@ exports.checkIn = async (req, res) => {
 			return;
 		}
 
-		const decodedToken = jwt.verify(token, config.secret);
+		const decodedToken = jwt.verify(token, config.jwtSecret);
 
 		if (!decodedToken) {
 			res.status(401).send({ message: "Token unauthorized" });
@@ -253,7 +253,7 @@ exports.checkOut = async (req, res) => {
 			return;
 		}
 
-		const decodedToken = jwt.verify(token, config.secret);
+		const decodedToken = jwt.verify(token, config.jwtSecret);
 
 		if (!decodedToken) {
 			res.status(401).send({ message: "Token unauthorized" });
