@@ -57,11 +57,11 @@ exports.login = async (req, res) => {
         token,
         refreshToken,
       });
+    } else {
+      res.status(500).send({
+        message: "Some error occurred while creating the Permissions."
+      });
     }
-
-    res.status(500).send({
-      message: "Some error occurred while creating the Permissions."
-    });
   } catch(error) {
     res.status(500).send({
       message:
@@ -88,39 +88,17 @@ exports.refreshToken = async (req, res) => {
     // Verify refresh token
     const refreshTokenInfo = jwt.verify(refreshToken, config.refreshTokenSecret);
 
-    // Create new refresh token
-    const newRefreshToken = jwt.sign(
-      { user_id: refreshTokenInfo._id },
-      config.refreshTokenSecret,
-      { expiresIn: config.refreshTokenExpiration }
-    )
-
     // Create new token
     const accessToken = jwt.sign(
       { user_id: refreshTokenInfo._id },
       config.jwtSecret,
       { expiresIn: config.jwtExpiration }
-    )
+    );
 
-    const user = await Users.findOneAndUpdate({
-      _id: new mongoose.Types.ObjectId(refreshTokenInfo.user_id),
-      token: refreshToken,
-    }, {
-      token: newRefreshToken
-    }, {
-      new: true,
-    })
-
-    if(user) {
-      res.status(200).send({
-        message: "Refresh token created!",
-        accessToken,
-        refreshToken: newRefreshToken,
-      });
-    }
-
-    res.status(500).send({
-      message: "Some error occurred while creating the Permissions."
+    res.status(200).send({
+      message: "Refresh token created!",
+      accessToken,
+      refreshToken,
     });
   } catch(error) {
     res.status(500).send({
