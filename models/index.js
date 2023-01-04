@@ -12,5 +12,6 @@ db.roles = require("./roles.model.js")(mongoose);
 db.users = require("./users.model.js")(mongoose);
 db.divisions = require("./divisions.model.js")(mongoose);
 db.attendances = require("./attendances.model.js")(mongoose);
+db.attendanceRadius = require("./attendanceRadius.model.js")(mongoose);
 
 module.exports = db;
