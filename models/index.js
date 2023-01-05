@@ -13,5 +13,6 @@ db.users = require("./users.model.js")(mongoose);
 db.divisions = require("./divisions.model.js")(mongoose);
 db.attendances = require("./attendances.model.js")(mongoose);
 db.shifts = require("./shifts.model.js")(mongoose);
+db.attendanceRadius = require("./attendanceRadius.model.js")(mongoose);
 
 module.exports = db;

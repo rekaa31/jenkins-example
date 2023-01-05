@@ -8,6 +8,7 @@ var API_AUTH = require('./v1/auth');
 var API_PROFILE = require('./v1/profile');
 var API_DIVISION = require('./v1/division');
 var API_SHIFTS = require('./v1/shifts');
+var API_RADIUS = require('./v1/attendanceRadius');
 
 router.use('/v1/', API_PERMISSIONS);
 router.use('/v1/', API_ROLES);
@@ -17,5 +18,6 @@ router.use('/v1/', API_AUTH);
 router.use('/v1/', API_PROFILE);
 router.use('/v1/', API_DIVISION);
 router.use('/v1/', API_SHIFTS);
+router.use('/v1/', API_RADIUS);
 
 module.exports = router;
