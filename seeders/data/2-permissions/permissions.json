@@ -1,0 +1,22 @@
+[
+    {
+		"name" : "Permission Index",
+		"code" : "permission.index",
+		"menu_name" : "Permissions"
+	},
+	{
+		"name" : "Permission Create",
+		"code" : "permission.create",
+		"menu_name" : "Permissions"
+	},
+	{
+		"name" : "Permission Update",
+		"code" : "permission.update",
+		"menu_name" : "Permissions"
+	},
+	{
+		"name" : "Permission Delete",
+		"code" : "permission.delete",
+		"menu_name" : "Permissions"
+	}
+]

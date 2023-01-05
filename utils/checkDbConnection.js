@@ -3,6 +3,7 @@ const dbConfig = require('./../config/db.config')
 
 function checkConnectionDb(){
     try {
+        console.log(`${dbConfig.config.url}`)
         mongoose.connect(`${dbConfig.config.url}`, dbConfig.config.options).then((response) => {
             console.log("Connected to MongoDB")
             return true
