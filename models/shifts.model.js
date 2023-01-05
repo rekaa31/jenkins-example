@@ -6,7 +6,8 @@ module.exports = mongoose => {
     mongoose.Schema(
       {
         shift: String,
-        jam: String,
+        start_time: String,
+        end_time: String,
         toleransi: Number,
       },
       { timestamps: true }
