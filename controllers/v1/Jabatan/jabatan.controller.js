@@ -26,7 +26,7 @@ exports.fetchAll = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Jabatan."
+        error.message || "Some error occurred while fetching the Jabatan."
     });
   }
 }
@@ -43,7 +43,7 @@ exports.fetchOneById = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Jabatan."
+        error.message || "Some error occurred while fetching the Jabatan."
     });
   }
 }
@@ -102,7 +102,7 @@ exports.update = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Jabatan."
+        error.message || "Some error occurred while updating the Jabatan."
     });
   }
 }
@@ -123,7 +123,7 @@ exports.deleteOne = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Jabatan."
+        error.message || "Some error occurred while deleting the Jabatan."
     });
   }
 }
