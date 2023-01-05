@@ -56,7 +56,21 @@ exports.create = async (req, res) => {
       return;
     }
 
-    const jadwalKerja = new JadwalKerja(req.body);
+    const currentJadwalKerja = await JadwalKerja.findOne({
+      nama: `${req.body.bulan} ${req.body.tahun}`,
+    });
+
+    if (currentJadwalKerja) {
+      res.status(500).send({
+        message: `Jadwal Kerja ${req.body.bulan} ${req.body.tahun} is already exists.`,
+      });
+      return;
+    }
+
+    const jadwalKerja = new JadwalKerja({
+      ...req.body,
+      nama: `${req.body.bulan} ${req.body.tahun}`,
+    });
 
     // Save shift in the database
     jadwalKerja
@@ -90,19 +104,35 @@ exports.update = async (req, res) => {
       return;
     }
 
-    const updatedJadwalKerja = await JadwalKerja.findByIdAndUpdate(req.params.id, req.body, {
+    const currentJadwalKerja = await JadwalKerja.findOne({
+      nama: `${req.body.bulan} ${req.body.tahun}`,
+    });
+
+    if (currentJadwalKerja.id !== req.params.id) {
+      res.status(500).send({
+        message: `Jadwal Kerja ${req.body.bulan} ${req.body.tahun} is already exists.`,
+      });
+      return;
+    }
+
+    const jadwalKerja = {
+      ...req.body,
+      nama: `${req.body.bulan} ${req.body.tahun}`,
+    }
+
+    const updatedJadwalKerja = await JadwalKerja.findByIdAndUpdate(req.params.id, jadwalKerja, {
       new: true,
     });
 
     res.status(200).send({
-      message: "Update Jabatan Success!",
+      message: "Update Jadwal Kerja Success!",
       payload: updatedJadwalKerja,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while updating the Jabatan."
+        error.message || "Some error occurred while updating the Jadwal Kerja."
     });
   }
 }
@@ -116,14 +146,14 @@ exports.deleteOne = async (req, res) => {
     const deletedJadwalKerja = await JadwalKerja.deleteOne(id);
 
     res.status(200).send({
-      message: "Delete Jabatan Success!",
+      message: "Delete Jadwal Kerja Success!",
       payload: deletedJadwalKerja,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Jabatan."
+        error.message || "Some error occurred while creating the Jadwal Kerja."
     });
   }
 }

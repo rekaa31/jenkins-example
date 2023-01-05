@@ -21,9 +21,15 @@ const KuotaDetailSchema = mongoose.Schema({
   total: Number,
 })
 
-const KuotaSchema = mongoose.Schema({
+const KuotaPosisiSchema = mongoose.Schema({
   weekday: [KuotaDetailSchema],
   weekend_libur: [KuotaDetailSchema],
+})
+
+const KuotaPeroranganSchema = mongoose.Schema({
+  nama: String,
+  user_id: String,
+  jumlah_hari_kerja: Number,
 })
 
 module.exports = mongoose => {
@@ -31,10 +37,16 @@ module.exports = mongoose => {
     "JadwalKerja",
     mongoose.Schema(
       {
-        nama: String,
+        nama: {
+          type: String,
+          unique: true,
+        },
+        bulan: String,
         tahun: Number,
         hari_libur: HariLiburSchema,
-        kuota: KuotaSchema,
+        kuota_posisi: KuotaPosisiSchema,
+        kuota_perorangan: [KuotaPeroranganSchema],
+        is_active: Boolean,
       },
       { timestamps: true }
     ).plugin(mongoosePaginate)
