@@ -11,6 +11,7 @@ var API_JADWAL_KERJA = require('./v1/jadwalKerja');
 var API_JABATAN = require('./v1/jabatan');
 var API_SHIFTS = require('./v1/shifts');
 var API_RADIUS = require('./v1/attendanceRadius');
+var API_JADWAL_PEGAWAI = require('./v1/jadwalPegawai');
 
 router.use('/v1/', API_PERMISSIONS);
 router.use('/v1/', API_ROLES);
@@ -23,5 +24,6 @@ router.use('/v1/', API_JADWAL_KERJA);
 router.use('/v1/', API_JABATAN);
 router.use('/v1/', API_SHIFTS);
 router.use('/v1/', API_RADIUS);
+router.use('/v1/', API_JADWAL_PEGAWAI);
 
 module.exports = router;
