@@ -18,7 +18,7 @@ exports.fetchAll = async (req, res) => {
     }
 
     res.status(200).send({
-      message: "Fetch Jabatan Success!",
+      message: "Fetch Jadwal Kerja Success!",
       payload: data
     });
 
@@ -26,7 +26,7 @@ exports.fetchAll = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while fetching the Jabatan."
+        error.message || "Some error occurred while fetching the Jadwal Kerja."
     });
   }
 }
