@@ -2,36 +2,35 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require("../../../config/auth.config.js");
 const db = require("../../../models");
-const { default: mongoose } = require('mongoose');
 const Users = db.users;
 
 exports.login = async (req, res) => {
   try {
     // Validate request
-		if (!req.body) {
-			res.status(400).send({ message: "Content can not be empty!" });
-			return;
-		}
+    if (!req.body) {
+      res.status(400).send({ message: "Content can not be empty!" });
+      return;
+    }
 
     const user = await Users.find({
       nip: req.body.nip
     });
 
-    if(user.length === 0) {
+    if (user.length === 0) {
       res.status(403).send({ message: "NIP or password is not correct" });
-			return;
+      return;
     }
 
     const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
 
-    if(!isPasswordCorrect) {
+    if (!isPasswordCorrect) {
       res.status(403).send({ message: "NIP or password is not correct" });
-			return;
+      return;
     }
 
-    if(!user[0].is_verified) {
+    if (!user[0].is_verified) {
       res.status(403).send({ message: "User is not verified" });
-			return;
+      return;
     }
 
     const token = jwt.sign(
@@ -51,7 +50,7 @@ exports.login = async (req, res) => {
       token: refreshToken,
     })
 
-    if(updatedUser) {
+    if (updatedUser) {
       res.status(200).send({
         message: "Login Success!",
         token,
@@ -62,10 +61,10 @@ exports.login = async (req, res) => {
         message: "Some error occurred while creating the Permissions."
       });
     }
-  } catch(error) {
+  } catch (error) {
     res.status(500).send({
       message:
-      error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Permissions."
     });
   }
 }
@@ -73,16 +72,16 @@ exports.login = async (req, res) => {
 exports.refreshToken = async (req, res) => {
   try {
     // Validate request
-		if (!req.body) {
-			res.status(400).send({ message: "Content can not be empty!" });
-			return;
-		}
+    if (!req.body) {
+      res.status(400).send({ message: "Content can not be empty!" });
+      return;
+    }
 
     const { refreshToken } = req.body;
 
-    if(!refreshToken) {
+    if (!refreshToken) {
       res.status(401).send({ message: "Token is not defined" });
-			return;
+      return;
     }
 
     // Verify refresh token
@@ -100,10 +99,10 @@ exports.refreshToken = async (req, res) => {
       accessToken,
       refreshToken,
     });
-  } catch(error) {
+  } catch (error) {
     res.status(500).send({
       message:
-      error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Permissions."
     });
   }
 }
