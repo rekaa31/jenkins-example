@@ -26,7 +26,7 @@ exports.fetchAll = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Shifts."
     });
   }
 }
@@ -43,7 +43,7 @@ exports.fetchOneById = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Shifts."
     });
   }
 }
@@ -80,7 +80,7 @@ exports.create = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Shifts."
     });
   }
 }
@@ -110,7 +110,7 @@ exports.update = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Shifts."
     });
   }
 }
@@ -131,7 +131,7 @@ exports.deleteOne = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message:
-        error.message || "Some error occurred while creating the Permissions."
+        error.message || "Some error occurred while creating the Shifts."
     });
   }
 }
