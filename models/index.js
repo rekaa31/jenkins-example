@@ -12,5 +12,6 @@ db.roles = require("./roles.model.js")(mongoose);
 db.users = require("./users.model.js")(mongoose);
 db.divisions = require("./divisions.model.js")(mongoose);
 db.attendances = require("./attendances.model.js")(mongoose);
+db.jabatan = require("./jabatan.model.js")(mongoose);
 
 module.exports = db;
