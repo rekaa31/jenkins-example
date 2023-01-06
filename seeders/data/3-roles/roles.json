@@ -1,0 +1,22 @@
+[
+	{
+		"name" : "Super Admin",
+		"code" : "super.admin",
+		"permissions" : []
+	},
+	{
+		"name" : "Owner",
+		"code" : "owner",
+		"permissions" : []
+	},
+	{
+		"name" : "Manajemen",
+		"code" : "manajemen",
+		"permissions" : []
+	},
+	{
+		"name" : "Pegawai",
+		"code" : "pegawai",
+		"permissions" : []
+	}
+]

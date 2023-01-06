@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { create, fetchAll, fetchOne, verification, importData } = require("./../../../controllers/v1/Users/users.controller");
+var { create, fetchAll, fetchOne, verification, importData, update } = require("./../../../controllers/v1/Users/users.controller");
 const authMiddleware = require('../../../middleware/auth.middleware');
 
 /* FETCH ALL PERMISSION */
@@ -18,7 +18,7 @@ router.put('/user/:id/verification', authMiddleware, verification);
 /* IMPORT USERS. */
 router.post('/user/import', authMiddleware, importData);
 
-// /* UPDATE PERMISSION */
-// router.get('/permission/:id', update);
+/* UPDATE USER */
+router.put('/user/:id', update);
 
 module.exports = router;

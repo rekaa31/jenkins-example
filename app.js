@@ -9,6 +9,7 @@ const { checkConnectionDb } = require('./utils/checkDbConnection');
 var app = express();
 
 const cors = require("cors");
+// const { cloudinary } = require('./config/cloudinary.config');
 
 var corsOptions = {
     origin: "*"

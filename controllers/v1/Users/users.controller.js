@@ -11,14 +11,14 @@ exports.fetchAll = async (req, res) => {
 	try {
 
 		const options = {
-            page: req.query.page,
-            limit: req.query.limit,
+			page: req.query.page,
+			limit: req.query.limit,
 			select: "-password -__v -token -otp"
-        };
+		};
 
 		let query = {
-			role : {
-				$ne : "super.admin"
+			role: {
+				$ne: "super.admin"
 			}
 		}
 
@@ -40,7 +40,7 @@ exports.fetchAll = async (req, res) => {
 			message: "Fetch Users Success!",
 			payload: {
 				...data,
-				docs : newArray
+				docs: newArray
 			}
 		});
 
@@ -99,8 +99,8 @@ exports.create = async (req, res) => {
 			nik: req.body.nik,
 			role: req.body.role,
 			tempat_lahir: req.body.tempat_lahir.toUpperCase(),
-			tanggal_lahir: moment(req.body.tanggal_lahir, "DD/MM/YYYY").format(),
-			tanggal_masuk: moment(req.body.tanggal_masuk, "DD/MM/YYYY").format(),
+			tanggal_lahir: new Date(req.body.tanggal_lahir),
+			tanggal_masuk: new Date(req.body.tanggal_masuk),
 			agama: req.body.agama,
 			status_perkawinan: req.body.status_perkawinan,
 			alamat: req.body.alamat,
@@ -142,26 +142,26 @@ exports.verification = async (req, res) => {
 	try {
 		const data = await Users.findById(req.params.id).select("-password -__v -token -otp")
 		const update = {
-			is_verified : !data.is_verified
+			is_verified: !data.is_verified
 		}
 
 		data.updateOne(update).then(() => {
-			if(update.is_verified){
+			if (update.is_verified) {
 				res.send({
 					message: "User has been Verified!"
 				})
-			}else{
+			} else {
 				res.send({
 					message: "User has been Unverified!"
 				})
 			}
 		})
-		.catch(err => {
-			console.log(err)
-			res.status(500).send({
-				message: "User sudah terdaftar!"
+			.catch(err => {
+				console.log(err)
+				res.status(500).send({
+					message: "User sudah terdaftar!"
+				});
 			});
-		});
 	} catch (error) {
 		res.status(500).send({
 			message:
@@ -175,6 +175,59 @@ exports.importData = async (req, res) => {
 		res.status(200).send({
 			message: "Masuk"
 		});
+	} catch (error) {
+		res.status(500).send({
+			message:
+				error.message || "Some error occurred while creating the Permissions."
+		});
+	}
+}
+
+exports.update = async (req, res) => {
+	const saltRounds = 10;
+	try {
+		if (!req.body) {
+			res.status(400).send({ message: "Content can not be empty!" });
+			return;
+		}
+
+		const passwordBcrypt = await bcrypt.hash(req.body.password, saltRounds);
+		const { nip, nik, email, nomor_kontak } = req.body;
+
+		if (nip || nik || email || nomor_kontak) {
+			res.status(500).send({ message: "NIP, NIK, email, or contact number can not be changed" });
+			return;
+		}
+
+		const user = {
+			name: req.body.name.toUpperCase(),
+			role: req.body.role,
+			tempat_lahir: req.body.tempat_lahir.toUpperCase(),
+			tanggal_lahir: req.body.tanggal_lahir,
+			tanggal_masuk: req.body.tanggal_masuk,
+			agama: req.body.agama,
+			status_perkawinan: req.body.status_perkawinan,
+			alamat: req.body.alamat,
+			otp: req.body.otp,
+			ip_address: req.body.ip_address,
+			is_verified: req.body.is_verified,
+			token: "",
+			divisi: req.body.divisi,
+			email: req.body.email,
+			nomor_kontak: req.body.nomor_kontak,
+			password: passwordBcrypt,
+			last_login: null
+		};
+
+		const updatedUser = await Users.findByIdAndUpdate(req.params.id, user, {
+			new: true,
+		});
+
+		res.status(200).send({
+			message: "Update User Success!",
+			payload: updatedUser
+		});
+
 	} catch (error) {
 		res.status(500).send({
 			message:
