@@ -2,13 +2,9 @@ const db = require("../../../models");
 const Attendances = db.attendances;
 const Users = db.users;
 const moment = require('moment')
-const fs = require("fs");
-const { minioClient } = require("../../../config/minio.config");
-const { v4: uuidv4 } = require('uuid');
 const config = require("../../../config/auth.config.js");
 const jwt = require("jsonwebtoken");
-
-const bucketName = "presensi-image";
+const { uploadCloudinary } = require("../../../helpers/uploadCloudinary");
 
 exports.checkAttendence = async (req, res) => {
 
@@ -177,19 +173,7 @@ exports.checkIn = async (req, res) => {
 		}
 
 		const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
-		const base64Data = new Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ""), 'base64');
-
-		// Getting the file type, ie: jpeg, png or gif
-		const type = req.body.image.split(';')[0].split('/')[1];
-
-		// console.log(profile.name.toLowerCase().replace(" ","-"))
-		const objectFileName = `${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkin-${moment().format("DDMMYYYY")}.${type}`;
-
-		await minioClient.putObject(bucketName, objectFileName, base64Data).catch((e) => {
-			console.log("Error while creating object from file data: ", e);
-			throw e;
-		});
-
+		
 		let Attendance = await Attendances.find({
 			user_id: decodedToken.user_id,
 			tanggal: moment().format("DD/MM/YYYY"),
@@ -201,6 +185,14 @@ exports.checkIn = async (req, res) => {
 			return;
 		}
 
+		// Getting the file type, ie: jpeg, png or gif
+		const type = req.body.image.split(';')[0].split('/')[1];
+
+		// console.log(profile.name.toLowerCase().replace(" ","-"))
+		const objectFileName = `presensi-checkin-${moment().format("DDMMYYYY")}.${type}`;
+
+		let image_presensi = await uploadCloudinary(req.body.image, `${process.env.NODE_ENV}/${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}`, objectFileName)
+
 		// Create a Permissions
 		const attendance = new Attendances({
 			user_id: decodedToken.user_id,
@@ -211,7 +203,7 @@ exports.checkIn = async (req, res) => {
 				status: true,
 				location: req.body.location,
 				keterangan: "",
-				image: objectFileName
+				image: image_presensi.secure_url
 			}
 		});
 
@@ -259,20 +251,9 @@ exports.checkOut = async (req, res) => {
 			res.status(401).send({ message: "Token unauthorized" });
 			return;
 		}
+		
 
 		const profile = await Users.findById(decodedToken.user_id).select("-password -__v -token -otp")
-		const base64Data = new Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ""), 'base64');
-
-		// Getting the file type, ie: jpeg, png or gif
-		const type = req.body.image.split(';')[0].split('/')[1];
-
-		// console.log(profile.name.toLowerCase().replace(" ","-"))
-		const objectFileName = `${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}/presensi-checkout-${moment().format("DDMMYYYY")}.${type}`;
-
-		await minioClient.putObject(bucketName, objectFileName, base64Data).catch((e) => {
-			console.log("Error while creating object from file data: ", e);
-			throw e;
-		});
 
 		let Attendance = await Attendances.find({
 			user_id: decodedToken.user_id,
@@ -285,6 +266,14 @@ exports.checkOut = async (req, res) => {
 			return;
 		}
 
+		// Getting the file type, ie: jpeg, png or gif
+		const type = req.body.image.split(';')[0].split('/')[1];
+
+		// console.log(profile.name.toLowerCase().replace(" ","-"))
+		const objectFileName = `presensi-checkout-${moment().format("DDMMYYYY")}.${type}`;
+
+		let image_presensi = await uploadCloudinary(req.body.image, `${process.env.NODE_ENV}/${profile.nip}-${profile.name.toLowerCase().replace(" ", "-")}`, objectFileName)
+
 		// Create a Permissions
 		const attendance = new Attendances({
 			user_id: decodedToken.user_id,
@@ -295,7 +284,7 @@ exports.checkOut = async (req, res) => {
 				status: true,
 				location: req.body.location,
 				keterangan: "",
-				image: objectFileName
+				image: image_presensi.secure_url
 			}
 
 		});
